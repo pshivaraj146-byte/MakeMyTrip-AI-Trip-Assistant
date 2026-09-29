@@ -443,7 +443,7 @@ Create a comprehensive, highly realistic, personalized, and budget-aware trip pl
 Ensure realistic Indian Rupee (INR) costs, practical travel routes, varied local food experiences, balanced daily itineraries, and hidden gems.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
         systemInstruction: "You are Atlas, a professional, friendly, and expert AI Travel Concierge. Always return data matching the specified JSON schema strictly.",
@@ -564,7 +564,7 @@ Your task:
 3. Return valid JSON.`;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
           systemInstruction: "You are the MakeMyTrip AI Trip Assistant. Extract trip parameters precisely and return valid JSON.",
@@ -679,7 +679,7 @@ Your task:
 - Preferred Transport: ${reqBody.transportPreference}`;
 
       const genResponse = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-2.5-flash',
         contents: tripPrompt,
         config: {
           systemInstruction: "You are the MakeMyTrip AI Trip Assistant. Return data matching the specified JSON schema strictly.",
@@ -756,7 +756,10 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     app.use(express.static(path.join(__dirname, 'dist')));
-    app.get('*', (req, res) => {
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
       res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
   }
