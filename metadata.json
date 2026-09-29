@@ -1,0 +1,6 @@
+{
+  "name": "MakeMyTrip AI Trip Assistant",
+  "description": "An academic prototype AI travel concierge that turns travel requests into personalized, budget-aware trip plans.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

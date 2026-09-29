@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "TripPlan": {
+      "title": "TripPlan",
+      "description": "Saved trip plan and itinerary",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "tripTitle": { "type": "string", "maxLength": 200 },
+        "destination": { "type": "string", "maxLength": 100 },
+        "durationDays": { "type": "number" },
+        "totalTravelers": { "type": "number" },
+        "budgetINR": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["tripTitle", "destination"]
+    },
+    "BookingRecord": {
+      "title": "BookingRecord",
+      "description": "Demo booking records",
+      "type": "object",
+      "properties": {
+        "bookingId": { "type": "string", "maxLength": 128 },
+        "serviceName": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["bookingId", "serviceName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile document"
+    },
+    "/users/{userId}/trips/{tripId}": {
+      "schema": { "$ref": "#/entities/TripPlan" },
+      "description": "Saved trips subcollection"
+    },
+    "/users/{userId}/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/BookingRecord" },
+      "description": "User bookings subcollection"
+    }
+  }
+}
