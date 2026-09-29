@@ -69404,6 +69404,7 @@ Your task:
     });
   }
 });
+var server_default = app;
 async function startServer() {
   const PORT = Number(process.env.PORT) || 3e3;
   if (process.env.NODE_ENV !== "production") {
@@ -69411,20 +69412,30 @@ async function startServer() {
       server: { middlewareMode: true }
     });
     app.use(vite.middlewares);
-  } else {
-    app.use(import_express.default.static(path2.join(__dirname, "dist")));
-    app.get("*", (req, res, next) => {
-      if (req.path.startsWith("/api")) {
-        return next();
-      }
-      res.sendFile(path2.join(__dirname, "dist", "index.html"));
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+    return;
+  }
+  app.use(import_express.default.static(path2.join(__dirname, "dist")));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      return next();
+    }
+    res.sendFile(path2.join(__dirname, "dist", "index.html"));
+  });
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
   }
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
-startServer();
+startServer().catch((error) => {
+  console.error("Server startup failed:", error);
+});
+export {
+  server_default as default
+};
 /*! Bundled license information:
 
 depd/index.js:
