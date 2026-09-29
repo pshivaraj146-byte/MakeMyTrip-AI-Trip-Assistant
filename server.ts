@@ -746,6 +746,8 @@ Your task:
   }
 });
 
+export default app;
+
 async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
 
@@ -754,19 +756,28 @@ async function startServer() {
       server: { middlewareMode: true },
     });
     app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.join(__dirname, 'dist')));
-    app.get('*', (req, res, next) => {
-      if (req.path.startsWith('/api')) {
-        return next();
-      }
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
+    return;
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  app.use(express.static(path.join(__dirname, 'dist')));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
+
+  // Vercel invokes the exported Express app directly; do not call listen there.
+  if (!process.env.VERCEL) {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
-startServer();
+startServer().catch((error) => {
+  console.error('Server startup failed:', error);
+});
